@@ -1,0 +1,27 @@
+<div class="reservations-container">
+  <div class="reservations-header">
+    <h2>Próximas Reservas</h2>
+    <span>Total: {{ getTotalReservations() }}</span>
+  </div>
+
+  @for (group of reservationsByDate; track group.date) {
+    <div class="date-group">
+      <p class="date-header">{{ group.date }}</p>
+      @for (reservation of group.reservations; track $index) {
+        <div class="reservation-card">
+          <div class="icon-container">
+            <ng-icon name="tablerClock" size="24"></ng-icon>
+          </div>
+          <div class="reservation-details">
+            <p class="client-name">{{ reservation.name }}</p>
+            <p class="service-name">{{ reservation.service }}</p>
+          </div>
+          <div class="reservation-time">
+            <p>{{ reservation.time }}</p>
+            <span>{{ reservation.duration }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

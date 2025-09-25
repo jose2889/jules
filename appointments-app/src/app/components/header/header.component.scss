@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2rem 1.5rem;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-container {
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-section {
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
+.reservations-summary {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .summary-left {
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+    span {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
+
+  .summary-right {
+    text-align: right;
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    span {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+}
+
+:host::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  top: 50px;
+  right: -100px;
+  width: 250px;
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 1;
+}

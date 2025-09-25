@@ -1,0 +1,23 @@
+<div class="bottom-nav-container">
+  <div class="nav-items">
+    @for (item of navItems.slice(0, 2); track item.label) {
+      <div class="nav-item" [class.active]="item.active">
+        <ng-icon [name]="item.icon" size="28"></ng-icon>
+        <span>{{ item.label }}</span>
+      </div>
+    }
+  </div>
+  <div class="fab-container">
+    <button class="fab">
+      <ng-icon name="tablerPlus" size="32"></ng-icon>
+    </button>
+  </div>
+  <div class="nav-items">
+    @for (item of navItems.slice(2); track item.label) {
+      <div class="nav-item" [class.active]="item.active">
+        <ng-icon [name]="item.icon" size="28"></ng-icon>
+        <span>{{ item.label }}</span>
+      </div>
+    }
+  </div>
+</div>

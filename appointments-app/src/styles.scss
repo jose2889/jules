@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #f76a3b;
+  --secondary-color: #ffede6;
+  --background-color: #f5f5f5;
+  --card-color: #ffffff;
+  --text-color: #1e1e1e;
+  --text-color-secondary: #6b6b6b;
+  --icon-bg-yellow: #fff8e1;
+  --icon-bg-green: #e8f5e9;
+  --icon-bg-pink: #fce4ec;
+  --icon-bg-blue: #e3f2fd;
+}
+
+.dark-mode {
+  --primary-color: #f76a3b;
+  --secondary-color: #3a2e29;
+  --background-color: #121212;
+  --card-color: #1e1e1e;
+  --text-color: #ffffff;
+  --text-color-secondary: #a0a0a0;
+  --icon-bg-yellow: #423b2e;
+  --icon-bg-green: #2c3b2e;
+  --icon-bg-pink: #422c34;
+  --icon-bg-blue: #2a3a43;
+}
+
+body {
+  font-family: 'Onest', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
