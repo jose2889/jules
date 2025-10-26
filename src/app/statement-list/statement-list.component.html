@@ -1,0 +1,25 @@
+<div class="statement-list-container">
+  <h2>Detalle de Estados de Cuenta</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Banco</th>
+        <th>Tarjeta</th>
+        <th>Fecha de Emisión</th>
+        <th>Fecha de Pago</th>
+        <th>Monto a Pagar</th>
+        <th>Cupo Disponible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let statement of statements">
+        <td><img [src]="statement.urlLogo" alt="{{ statement.banco }} logo" class="bank-logo"> {{ statement.banco }}</td>
+        <td>{{ statement.tarjeta }} ({{ statement.n_tarjeta }})</td>
+        <td>{{ statement.fechaEmision | date:'dd/MM/yyyy' }}</td>
+        <td>{{ statement.fechaPago | date:'dd/MM/yyyy' }}</td>
+        <td>{{ statement.montoAPagar | currency:statement.divisa }}</td>
+        <td>{{ statement.cupoDisponible | currency:statement.divisa }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,6 @@
+<div class="container">
+  <h1>Dashboard de Finanzas</h1>
+  <app-filter (monthSelected)="onMonthSelected($event)"></app-filter>
+  <app-summary [summary]="summary"></app-summary>
+  <app-statement-list [statements]="accountStatements"></app-statement-list>
+</div>
