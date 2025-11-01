@@ -24,7 +24,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let statement of statements">
+      <tr *ngFor="let statement of statements" 
+          [class.paid]="isPaid(statement.id)"
+          (click)="togglePayment(statement, $event)"
+          [title]="isPaid(statement.id) ? 'Marcar como no pagado' : 'Marcar como pagado'">
         <td><img [src]="statement.urlLogo" alt="{{ statement.banco }} logo" class="bank-logo"> {{ statement.banco }}</td>
         <td>{{ statement.tarjeta }} ({{ statement.n_tarjeta }})</td>
         <td>{{ statement.fechaEmision | date:'dd/MM/yyyy' }}</td>

@@ -1,20 +1,57 @@
 <div class="container">
   <header class="dashboard-header">
     <h1>Dashboard de Finanzas</h1>
-    <button class="logout-button" (click)="logout()" title="Cerrar Sesión">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>Cerrar Sesión</span>
-    </button>
+    <div class="header-actions">
+      <button class="clear-storage-button" (click)="clearLocalStorage()" title="Limpiar registros de pagos">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Limpiar Pagos</span>
+      </button>
+      <button class="logout-button" (click)="logout()" title="Cerrar Sesión">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
   </header>
   <app-filter (monthSelected)="onMonthSelected($event)"></app-filter>
-  <app-summary [summary]="summary"></app-summary>
+  <app-summary [summary]="adjustedSummary || summary"></app-summary>
   <app-resumen-nacional-internacional 
     [resumenNacional]="resumenNacional" 
     [resumenInternacional]="resumenInternacional">
   </app-resumen-nacional-internacional>
-  <app-statement-list [statements]="accountStatements" [selectedMonth]="selectedMonth"></app-statement-list>
+  <app-statement-list 
+    [statements]="accountStatements" 
+    [selectedMonth]="selectedMonth"
+    (paymentToggled)="onPaymentToggled($event)">
+  </app-statement-list>
+
+  <!-- Modal de confirmación -->
+  <div class="modal-overlay" *ngIf="showConfirmModal" (click)="cancelClearStorage()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-icon warning">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>¿Confirmar acción?</h3>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas limpiar todos los registros de pagos guardados?</p>
+        <p class="warning-text">Esta acción eliminará todas las marcas de pagos de todos los meses y <strong>no se puede deshacer</strong>.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-button cancel" (click)="cancelClearStorage()">Cancelar</button>
+        <button class="modal-button confirm" (click)="confirmClearStorage()">Confirmar</button>
+      </div>
+    </div>
+  </div>
 </div>

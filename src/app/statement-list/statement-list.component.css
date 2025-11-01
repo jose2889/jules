@@ -49,12 +49,28 @@ th:last-child {
 tbody tr {
   transition: all 0.2s ease;
   border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
 }
 
 tbody tr:hover {
   background-color: #f8fafc;
   transform: scale(1.01);
   box-shadow: var(--shadow-sm);
+}
+
+tbody tr.paid {
+  background-color: #d1fae5;
+  border-left: 4px solid var(--success-color);
+}
+
+tbody tr.paid:hover {
+  background-color: #a7f3d0;
+}
+
+tbody tr.paid td:nth-child(5) {
+  color: #059669;
+  text-decoration: line-through;
+  opacity: 0.8;
 }
 
 tbody tr:last-child {
