@@ -5,12 +5,11 @@ import { StatementListComponent } from '../statement-list/statement-list.compone
 import { FilterComponent } from '../filter/filter.component';
 import { ApiService } from '../api.service';
 import { Summary, AccountStatement } from '../models';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SummaryComponent, StatementListComponent, FilterComponent, HttpClientModule],
+  imports: [CommonModule, SummaryComponent, StatementListComponent, FilterComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
