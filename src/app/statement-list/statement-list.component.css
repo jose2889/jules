@@ -100,13 +100,36 @@ td:nth-child(6) {
   color: var(--success-color);
 }
 
-/* Estados vacíos */
-.statement-list-container:empty::before {
-  content: 'No hay estados de cuenta disponibles';
-  display: block;
+/* Estado vacío */
+.empty-state {
   text-align: center;
-  padding: 3rem;
+  padding: 4rem 2rem;
   color: var(--text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.empty-state strong {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 /* Responsive */
@@ -118,6 +141,23 @@ td:nth-child(6) {
   .statement-list-container h2 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    font-size: 1.25rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
   }
 
   th, td {

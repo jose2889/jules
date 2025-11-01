@@ -3,21 +3,21 @@
     <i class="fas fa-dollar-sign"></i>
     <div>
       <h4>Monto Total a Pagar</h4>
-      <p>{{ summary.montoTotalAPagar | currency:'CLP' }}</p>
+      <p>{{ summary.montoTotalAPagar | currencySpace:'CLP' }}</p>
     </div>
   </div>
   <div class="summary-card">
     <i class="fas fa-credit-card"></i>
     <div>
       <h4>Cupo Disponible Total</h4>
-      <p>{{ summary.cupoDisponibleTotal | currency:'CLP' }}</p>
+      <p>{{ summary.cupoDisponibleTotal | currencySpace:'CLP' }}</p>
     </div>
   </div>
   <div class="summary-card">
     <i class="fas fa-university"></i>
     <div>
       <h4>Cupo Total General</h4>
-      <p>{{ summary.cupoTotalGeneral | currency:'CLP' }}</p>
+      <p>{{ summary.cupoTotalGeneral | currencySpace:'CLP' }}</p>
     </div>
   </div>
 </div>

@@ -1,6 +1,18 @@
 <div class="statement-list-container">
   <h2>Detalle de Estados de Cuenta</h2>
-  <table>
+  
+  <div *ngIf="!statements || statements.length === 0" class="empty-state">
+    <div class="empty-state-icon">📋</div>
+    <h3>No se encontraron registros</h3>
+    <p *ngIf="selectedMonth">
+      No hay estados de cuenta disponibles para <strong>{{ getFormattedMonth() }}</strong>.
+    </p>
+    <p *ngIf="!selectedMonth">
+      No hay estados de cuenta disponibles para el período seleccionado.
+    </p>
+  </div>
+
+  <table *ngIf="statements && statements.length > 0">
     <thead>
       <tr>
         <th>Banco</th>
@@ -17,8 +29,8 @@
         <td>{{ statement.tarjeta }} ({{ statement.n_tarjeta }})</td>
         <td>{{ statement.fechaEmision | date:'dd/MM/yyyy' }}</td>
         <td>{{ statement.fechaPago | date:'dd/MM/yyyy' }}</td>
-        <td>{{ statement.montoAPagar | currency:statement.divisa }}</td>
-        <td>{{ statement.cupoDisponible | currency:statement.divisa }}</td>
+        <td>{{ statement.montoAPagar | currencySpace:statement.divisa }}</td>
+        <td>{{ statement.cupoDisponible | currencySpace:statement.divisa }}</td>
       </tr>
     </tbody>
   </table>

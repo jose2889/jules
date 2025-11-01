@@ -17,17 +17,26 @@ import { HttpClientModule } from '@angular/common/http';
 export class DashboardComponent implements OnInit {
   summary: Summary | null = null;
   accountStatements: AccountStatement[] = [];
+  selectedMonth: string = '';
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    this.fetchData('2025-09');
+    // El filtro emitirá automáticamente el mes actual al inicializarse
+    // No es necesario cargar datos aquí ya que onMonthSelected se llamará
   }
 
   fetchData(mesEmision: string) {
-    this.apiService.getAccountStatements({ mesEmision }).subscribe(data => {
-      this.summary = data.resumen;
-      this.accountStatements = data.estadosDeCuenta;
+    this.selectedMonth = mesEmision;
+    this.apiService.getAccountStatements({ mesEmision }).subscribe({
+      next: (data) => {
+        this.summary = data.resumen;
+        this.accountStatements = data.estadosDeCuenta || [];
+      },
+      error: (error) => {
+        console.error('Error al cargar datos:', error);
+        this.accountStatements = [];
+      }
     });
   }
 
