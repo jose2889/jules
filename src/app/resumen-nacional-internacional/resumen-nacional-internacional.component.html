@@ -1,7 +1,14 @@
-<div class="resumen-container" *ngIf="resumenNacional || resumenInternacional">
-  <h2>Resumen por Tipo</h2>
+<div class="resumen-container">
+  <div class="resumen-header-section">
+    <h2>Resumen por Tipo</h2>
+    <app-filter [selectedMonth]="selectedMonth" (monthSelected)="monthSelected.emit($event)"></app-filter>
+  </div>
   
-  <div class="resumen-grid">
+  <div *ngIf="!resumenNacional && !resumenInternacional" class="resumen-empty-state">
+    <p>No hay datos de resumen disponibles para el período seleccionado.</p>
+  </div>
+  
+  <div class="resumen-grid" *ngIf="resumenNacional || resumenInternacional">
     <!-- Resumen Nacional -->
     <div class="resumen-card nacional" *ngIf="resumenNacional">
       <div class="resumen-header">

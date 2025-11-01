@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -9,19 +9,27 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.css'
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent implements OnInit, OnChanges {
+  @Input() selectedMonth: string = '';
   @Output() monthSelected = new EventEmitter<string>();
-  selectedMonth: string = '';
 
   ngOnInit() {
-    // Obtener el mes y año actual en formato YYYY-MM
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() retorna 0-11, necesitamos 1-12
-    this.selectedMonth = `${year}-${month}`;
-    
-    // Emitir el mes actual por defecto
-    this.monthSelected.emit(this.selectedMonth);
+    // Si no hay mes seleccionado, usar el mes actual
+    if (!this.selectedMonth) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      this.selectedMonth = `${year}-${month}`;
+      
+      // Emitir el mes actual por defecto solo si no hay Input
+      this.monthSelected.emit(this.selectedMonth);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedMonth'] && changes['selectedMonth'].currentValue) {
+      this.selectedMonth = changes['selectedMonth'].currentValue;
+    }
   }
 
   onMonthChange(event: Event) {

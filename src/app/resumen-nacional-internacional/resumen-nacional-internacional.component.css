@@ -7,13 +7,26 @@
   margin-bottom: 2rem;
 }
 
-.resumen-container h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.resumen-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--border-color);
+  gap: 1.5rem;
+}
+
+.resumen-header-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.resumen-header-section app-filter {
+  flex-shrink: 0;
 }
 
 .resumen-grid {
@@ -136,14 +149,31 @@
   color: var(--primary-color);
 }
 
+.resumen-empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-secondary);
+}
+
+.resumen-empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .resumen-container {
     padding: 1.5rem;
   }
 
-  .resumen-container h2 {
+  .resumen-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .resumen-header-section h2 {
     font-size: 1.25rem;
-    margin-bottom: 1rem;
+    width: 100%;
   }
 
   .resumen-grid {
