@@ -4,6 +4,7 @@ import { SummaryComponent } from '../summary/summary.component';
 import { StatementListComponent } from '../statement-list/statement-list.component';
 import { FilterComponent } from '../filter/filter.component';
 import { ApiService } from '../api.service';
+import { AuthService } from '../auth.service';
 import { Summary, AccountStatement } from '../models';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -19,7 +20,10 @@ export class DashboardComponent implements OnInit {
   accountStatements: AccountStatement[] = [];
   selectedMonth: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     // El filtro emitirá automáticamente el mes actual al inicializarse
@@ -42,5 +46,9 @@ export class DashboardComponent implements OnInit {
 
   onMonthSelected(mesEmision: string) {
     this.fetchData(mesEmision);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }
