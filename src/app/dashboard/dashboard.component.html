@@ -12,5 +12,9 @@
   </header>
   <app-filter (monthSelected)="onMonthSelected($event)"></app-filter>
   <app-summary [summary]="summary"></app-summary>
+  <app-resumen-nacional-internacional 
+    [resumenNacional]="resumenNacional" 
+    [resumenInternacional]="resumenInternacional">
+  </app-resumen-nacional-internacional>
   <app-statement-list [statements]="accountStatements" [selectedMonth]="selectedMonth"></app-statement-list>
 </div>

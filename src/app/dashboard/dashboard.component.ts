@@ -3,20 +3,23 @@ import { CommonModule } from '@angular/common';
 import { SummaryComponent } from '../summary/summary.component';
 import { StatementListComponent } from '../statement-list/statement-list.component';
 import { FilterComponent } from '../filter/filter.component';
+import { ResumenNacionalInternacionalComponent } from '../resumen-nacional-internacional/resumen-nacional-internacional.component';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
-import { Summary, AccountStatement } from '../models';
+import { Summary, AccountStatement, ResumenNacional, ResumenInternacional } from '../models';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SummaryComponent, StatementListComponent, FilterComponent, HttpClientModule],
+  imports: [CommonModule, SummaryComponent, StatementListComponent, FilterComponent, ResumenNacionalInternacionalComponent, HttpClientModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
   summary: Summary | null = null;
+  resumenNacional: ResumenNacional | null = null;
+  resumenInternacional: ResumenInternacional | null = null;
   accountStatements: AccountStatement[] = [];
   selectedMonth: string = '';
 
@@ -35,11 +38,15 @@ export class DashboardComponent implements OnInit {
     this.apiService.getAccountStatements({ mesEmision }).subscribe({
       next: (data) => {
         this.summary = data.resumen;
+        this.resumenNacional = data.resumenNacional || null;
+        this.resumenInternacional = data.resumenInternacional || null;
         this.accountStatements = data.estadosDeCuenta || [];
       },
       error: (error) => {
         console.error('Error al cargar datos:', error);
         this.accountStatements = [];
+        this.resumenNacional = null;
+        this.resumenInternacional = null;
       }
     });
   }

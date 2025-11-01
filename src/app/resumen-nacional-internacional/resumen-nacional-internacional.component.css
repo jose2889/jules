@@ -1,0 +1,170 @@
+.resumen-container {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.resumen-container h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.resumen-card {
+  background: linear-gradient(135deg, var(--surface) 0%, #f8fafc 100%);
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.resumen-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.resumen-card.nacional::before {
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.resumen-card.internacional::before {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.resumen-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.resumen-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.resumen-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.resumen-card.nacional .resumen-icon {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.resumen-card.internacional .resumen-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.resumen-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.resumen-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.resumen-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.resumen-item .label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resumen-item .value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+.resumen-item .amount-pagar {
+  color: var(--danger-color);
+}
+
+.resumen-item .amount-disponible {
+  color: var(--success-color);
+}
+
+.resumen-item .amount-total {
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .resumen-container {
+    padding: 1.5rem;
+  }
+
+  .resumen-container h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .resumen-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .resumen-card {
+    padding: 1.5rem;
+  }
+
+  .resumen-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .resumen-header h3 {
+    font-size: 1.125rem;
+  }
+
+  .resumen-item .value {
+    font-size: 1rem;
+  }
+}
+

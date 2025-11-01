@@ -5,6 +5,18 @@ export interface Summary {
   proximoPago: any;
 }
 
+export interface ResumenNacional {
+  montoTotalAPagar: number;
+  cupoDisponibleTotal: number;
+  cupoTotalGeneral: number;
+}
+
+export interface ResumenInternacional {
+  montoTotalAPagar: number;
+  cupoDisponibleTotal: number;
+  cupoTotalGeneral: number;
+}
+
 export interface AccountStatement {
   id: number;
   banco: string;
@@ -21,5 +33,7 @@ export interface AccountStatement {
 
 export interface ApiResponse {
   resumen: Summary;
+  resumenNacional?: ResumenNacional;
+  resumenInternacional?: ResumenInternacional;
   estadosDeCuenta: AccountStatement[];
 }
