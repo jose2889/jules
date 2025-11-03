@@ -13,7 +13,8 @@ import { CurrencySpacePipe } from '../currency-space.pipe';
 export class StatementListComponent implements OnInit, OnChanges {
   @Input() statements: AccountStatement[] = [];
   @Input() selectedMonth: string = '';
-  @Output() paymentToggled = new EventEmitter<{ statementId: number; isPaid: boolean; amount: number }>();
+  @Output() paymentToggled = new EventEmitter<{ statementId: number; isPaid: boolean; amount: number; isNacional: boolean }>();
+  @Output() monthSelected = new EventEmitter<string>();
   
   paidStatements: Set<number> = new Set();
 
@@ -103,7 +104,92 @@ export class StatementListComponent implements OnInit, OnChanges {
     this.paymentToggled.emit({
       statementId: statement.id,
       isPaid: !isCurrentlyPaid,
-      amount: statement.montoAPagar
+      amount: statement.montoAPagar,
+      isNacional: statement.divisa === 'CLP' || statement.divisa === 'clp'
     });
+  }
+
+  goToPreviousMonth(): void {
+    if (!this.selectedMonth) return;
+    
+    const [year, month] = this.selectedMonth.split('-');
+    const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+    date.setMonth(date.getMonth() - 1);
+    
+    const newYear = date.getFullYear();
+    const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const newMonthString = `${newYear}-${newMonth}`;
+    
+    this.monthSelected.emit(newMonthString);
+  }
+
+  goToNextMonth(): void {
+    if (!this.selectedMonth) return;
+    
+    const [year, month] = this.selectedMonth.split('-');
+    const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+    date.setMonth(date.getMonth() + 1);
+    
+    const newYear = date.getFullYear();
+    const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const newMonthString = `${newYear}-${newMonth}`;
+    
+    this.monthSelected.emit(newMonthString);
+  }
+
+  getImageUrl(url: string): string {
+    if (!url || !url.trim()) {
+      return '';
+    }
+    
+    const trimmedUrl = url.trim();
+    
+    // Si ya es una URL completa, retornarla tal cual
+    if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://') || trimmedUrl.startsWith('data:')) {
+      return trimmedUrl;
+    }
+    
+    // Si es una ruta relativa que empieza con /, podría necesitar un base URL
+    // Por ahora retornamos la URL tal cual
+    return trimmedUrl;
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (!img) return;
+    
+    const originalSrc = img.getAttribute('data-original-src') || img.src;
+    const bancoName = img.alt.replace(' logo', '') || 'B';
+    
+    // Si ya reintentamos, mostrar fallback directamente
+    if (img.dataset['retryCount'] === 'true') {
+      this.showImageFallback(img, bancoName);
+      return;
+    }
+    
+    // Primera vez que falla - intentar cargar directamente
+    img.dataset['retryCount'] = 'true';
+    
+    // Reintentar una vez con la URL original
+    const retryImg = new Image();
+    retryImg.onload = () => {
+      img.src = originalSrc;
+    };
+    retryImg.onerror = () => {
+      this.showImageFallback(img, bancoName);
+    };
+    retryImg.src = originalSrc;
+  }
+
+  private showImageFallback(img: HTMLImageElement, bancoName: string): void {
+    const firstLetter = bancoName.charAt(0).toUpperCase();
+    const svgData = `data:image/svg+xml,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+        <rect width="32" height="32" fill="#e5e7eb" rx="4"/>
+        <text x="16" y="16" dominant-baseline="central" text-anchor="middle" font-size="14" font-weight="600" fill="#6b7280">${firstLetter}</text>
+      </svg>
+    `)}`;
+    img.src = svgData;
+    img.onerror = null; // Prevenir loops infinitos
   }
 }

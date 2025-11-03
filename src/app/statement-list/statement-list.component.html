@@ -1,5 +1,20 @@
 <div class="statement-list-container">
-  <h2>Detalle de Estados de Cuenta</h2>
+  <div class="table-header">
+    <h2>Detalle de Estados de Cuenta</h2>
+    <div class="month-navigation">
+      <button class="nav-button prev" (click)="goToPreviousMonth()" title="Mes anterior" [disabled]="!selectedMonth">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="current-month" *ngIf="selectedMonth">{{ getFormattedMonth() }}</span>
+      <button class="nav-button next" (click)="goToNextMonth()" title="Mes siguiente" [disabled]="!selectedMonth">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
   
   <div *ngIf="!statements || statements.length === 0" class="empty-state">
     <div class="empty-state-icon">📋</div>
@@ -28,7 +43,16 @@
           [class.paid]="isPaid(statement.id)"
           (click)="togglePayment(statement, $event)"
           [title]="isPaid(statement.id) ? 'Marcar como no pagado' : 'Marcar como pagado'">
-        <td><img [src]="statement.urlLogo" alt="{{ statement.banco }} logo" class="bank-logo"> {{ statement.banco }}</td>
+        <td>
+          <img 
+            [src]="getImageUrl(statement.urlLogo)" 
+            [alt]="statement.banco + ' logo'" 
+            class="bank-logo"
+            [attr.data-original-src]="statement.urlLogo"
+            (error)="onImageError($event)"
+            loading="lazy">
+          {{ statement.banco }}
+        </td>
         <td>{{ statement.tarjeta }} ({{ statement.n_tarjeta }})</td>
         <td>{{ statement.fechaEmision | date:'dd/MM/yyyy' }}</td>
         <td>{{ statement.fechaPago | date:'dd/MM/yyyy' }}</td>

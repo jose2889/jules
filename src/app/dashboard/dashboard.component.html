@@ -23,15 +23,16 @@
   </header>
   <app-summary [summary]="adjustedSummary || summary"></app-summary>
   <app-resumen-nacional-internacional 
-    [resumenNacional]="resumenNacional" 
-    [resumenInternacional]="resumenInternacional"
+    [resumenNacional]="adjustedResumenNacional || resumenNacional" 
+    [resumenInternacional]="adjustedResumenInternacional || resumenInternacional"
     [selectedMonth]="selectedMonth"
     (monthSelected)="onMonthSelected($event)">
   </app-resumen-nacional-internacional>
   <app-statement-list 
     [statements]="accountStatements" 
     [selectedMonth]="selectedMonth"
-    (paymentToggled)="onPaymentToggled($event)">
+    (paymentToggled)="onPaymentToggled($event)"
+    (monthSelected)="onMonthSelected($event)">
   </app-statement-list>
 
   <!-- Modal de confirmación -->

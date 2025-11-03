@@ -20,10 +20,14 @@ export class DashboardComponent implements OnInit {
   summary: Summary | null = null;
   adjustedSummary: Summary | null = null;
   resumenNacional: ResumenNacional | null = null;
+  adjustedResumenNacional: ResumenNacional | null = null;
   resumenInternacional: ResumenInternacional | null = null;
+  adjustedResumenInternacional: ResumenInternacional | null = null;
   accountStatements: AccountStatement[] = [];
   selectedMonth: string = '';
   private paidAmount: number = 0;
+  private paidAmountNacional: number = 0;
+  private paidAmountInternacional: number = 0;
   showConfirmModal: boolean = false;
 
   constructor(
@@ -39,6 +43,8 @@ export class DashboardComponent implements OnInit {
   fetchData(mesEmision: string) {
     this.selectedMonth = mesEmision;
     this.paidAmount = 0;
+    this.paidAmountNacional = 0;
+    this.paidAmountInternacional = 0;
     
     this.apiService.getAccountStatements({ mesEmision }).subscribe({
       next: (data) => {
@@ -47,6 +53,7 @@ export class DashboardComponent implements OnInit {
         this.resumenInternacional = data.resumenInternacional || null;
         this.accountStatements = data.estadosDeCuenta || [];
         this.updateAdjustedSummary();
+        this.updateAdjustedResumenPorTipo();
       },
       error: (error) => {
         console.error('Error al cargar datos:', error);
@@ -54,6 +61,8 @@ export class DashboardComponent implements OnInit {
         this.resumenNacional = null;
         this.resumenInternacional = null;
         this.adjustedSummary = null;
+        this.adjustedResumenNacional = null;
+        this.adjustedResumenInternacional = null;
       }
     });
   }
@@ -61,6 +70,8 @@ export class DashboardComponent implements OnInit {
   private loadPaidAmount(): void {
     if (!this.selectedMonth || !this.accountStatements.length) {
       this.paidAmount = 0;
+      this.paidAmountNacional = 0;
+      this.paidAmountInternacional = 0;
       return;
     }
 
@@ -70,15 +81,28 @@ export class DashboardComponent implements OnInit {
     if (stored) {
       try {
         const paidIds = JSON.parse(stored) as number[];
-        this.paidAmount = this.accountStatements
-          .filter(s => paidIds.includes(s.id))
+        const paidStatements = this.accountStatements.filter(s => paidIds.includes(s.id));
+        
+        this.paidAmount = paidStatements.reduce((sum, s) => sum + s.montoAPagar, 0);
+        
+        // Separar por tipo (nacional si divisa es CLP)
+        this.paidAmountNacional = paidStatements
+          .filter(s => s.divisa === 'CLP' || s.divisa === 'clp')
+          .reduce((sum, s) => sum + s.montoAPagar, 0);
+        
+        this.paidAmountInternacional = paidStatements
+          .filter(s => s.divisa !== 'CLP' && s.divisa !== 'clp')
           .reduce((sum, s) => sum + s.montoAPagar, 0);
       } catch (error) {
         console.error('Error al cargar montos pagados:', error);
         this.paidAmount = 0;
+        this.paidAmountNacional = 0;
+        this.paidAmountInternacional = 0;
       }
     } else {
       this.paidAmount = 0;
+      this.paidAmountNacional = 0;
+      this.paidAmountInternacional = 0;
     }
   }
 
@@ -96,14 +120,47 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  onPaymentToggled(event: { statementId: number; isPaid: boolean; amount: number }): void {
+  private updateAdjustedResumenPorTipo(): void {
+    this.loadPaidAmount();
+    
+    if (this.resumenNacional) {
+      this.adjustedResumenNacional = {
+        ...this.resumenNacional,
+        montoTotalAPagar: Math.max(0, this.resumenNacional.montoTotalAPagar - this.paidAmountNacional)
+      };
+    } else {
+      this.adjustedResumenNacional = null;
+    }
+    
+    if (this.resumenInternacional) {
+      this.adjustedResumenInternacional = {
+        ...this.resumenInternacional,
+        montoTotalAPagar: Math.max(0, this.resumenInternacional.montoTotalAPagar - this.paidAmountInternacional)
+      };
+    } else {
+      this.adjustedResumenInternacional = null;
+    }
+  }
+
+  onPaymentToggled(event: { statementId: number; isPaid: boolean; amount: number; isNacional: boolean }): void {
     if (event.isPaid) {
       this.paidAmount += event.amount;
+      if (event.isNacional) {
+        this.paidAmountNacional += event.amount;
+      } else {
+        this.paidAmountInternacional += event.amount;
+      }
     } else {
       this.paidAmount -= event.amount;
+      if (event.isNacional) {
+        this.paidAmountNacional -= event.amount;
+      } else {
+        this.paidAmountInternacional -= event.amount;
+      }
     }
     
     this.updateAdjustedSummary();
+    this.updateAdjustedResumenPorTipo();
   }
 
   onMonthSelected(mesEmision: string) {
@@ -132,7 +189,10 @@ export class DashboardComponent implements OnInit {
 
     // Actualizar el estado actual
     this.paidAmount = 0;
+    this.paidAmountNacional = 0;
+    this.paidAmountInternacional = 0;
     this.updateAdjustedSummary();
+    this.updateAdjustedResumenPorTipo();
 
     // Refrescar la tabla forzando recarga de datos
     if (this.selectedMonth) {
