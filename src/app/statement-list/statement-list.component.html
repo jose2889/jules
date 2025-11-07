@@ -1,4 +1,18 @@
 <div class="statement-list-container">
+  <div class="alert-error" *ngIf="showError && errorMessage">
+    <div class="alert-content">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="alert-message">{{ errorMessage }}</span>
+      <button class="alert-close" (click)="hideError()" aria-label="Cerrar alerta">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
   <div class="table-header">
     <h2>Detalle de Estados de Cuenta</h2>
     <div class="month-navigation">
@@ -32,6 +46,7 @@
       <tr>
         <th>Banco</th>
         <th>Tarjeta</th>
+        <th>Titular</th>
         <th>Fecha de Emisión</th>
         <th>Fecha de Pago</th>
         <th>Monto a Pagar</th>
@@ -40,9 +55,9 @@
     </thead>
     <tbody>
       <tr *ngFor="let statement of statements" 
-          [class.paid]="isPaid(statement.id)"
+          [class.paid]="isPaid(statement)"
           (click)="togglePayment(statement, $event)"
-          [title]="isPaid(statement.id) ? 'Marcar como no pagado' : 'Marcar como pagado'">
+          [title]="isPaid(statement) ? 'Marcar como no pagado' : 'Marcar como pagado'">
         <td>
           <img 
             [src]="getImageUrl(statement.urlLogo)" 
@@ -54,6 +69,7 @@
           {{ statement.banco }}
         </td>
         <td>{{ statement.tarjeta }} ({{ statement.n_tarjeta }})</td>
+        <td>{{ statement.titular }}</td>
         <td>{{ statement.fechaEmision | date:'dd/MM/yyyy' }}</td>
         <td>{{ statement.fechaPago | date:'dd/MM/yyyy' }}</td>
         <td>{{ statement.montoAPagar | currencySpace:statement.divisa }}</td>

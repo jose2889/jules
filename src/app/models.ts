@@ -29,6 +29,8 @@ export interface AccountStatement {
   cupoDisponible: number;
   divisa: string;
   n_tarjeta: string;
+  titular: string;
+  pagado: boolean;
 }
 
 export interface ApiResponse {
@@ -36,4 +38,9 @@ export interface ApiResponse {
   resumenNacional?: ResumenNacional;
   resumenInternacional?: ResumenInternacional;
   estadosDeCuenta: AccountStatement[];
+}
+
+export interface UpdateStatusResponse {
+  paid: boolean;
+  success: boolean;
 }

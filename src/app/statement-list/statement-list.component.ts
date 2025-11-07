@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AccountStatement } from '../models';
 import { CommonModule } from '@angular/common';
 import { CurrencySpacePipe } from '../currency-space.pipe';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-statement-list',
@@ -10,28 +11,16 @@ import { CurrencySpacePipe } from '../currency-space.pipe';
   templateUrl: './statement-list.component.html',
   styleUrl: './statement-list.component.css'
 })
-export class StatementListComponent implements OnInit, OnChanges {
+export class StatementListComponent {
   @Input() statements: AccountStatement[] = [];
   @Input() selectedMonth: string = '';
   @Output() paymentToggled = new EventEmitter<{ statementId: number; isPaid: boolean; amount: number; isNacional: boolean }>();
   @Output() monthSelected = new EventEmitter<string>();
-  
-  paidStatements: Set<number> = new Set();
 
-  ngOnInit() {
-    this.loadPaidStatements();
-  }
+  errorMessage: string | null = null;
+  showError: boolean = false;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedMonth'] && !changes['selectedMonth'].firstChange) {
-      this.loadPaidStatements();
-    }
-    
-    // Recargar estados pagados cuando cambian los statements
-    if (changes['statements'] && !changes['statements'].firstChange) {
-      this.loadPaidStatements();
-    }
-  }
+  constructor(private apiService: ApiService) {}
 
   getFormattedMonth(): string {
     if (!this.selectedMonth) {
@@ -49,64 +38,71 @@ export class StatementListComponent implements OnInit, OnChanges {
     return `${months[monthIndex]} ${year}`;
   }
 
-  private getStorageKey(): string {
-    return `paidStatements_${this.selectedMonth}`;
-  }
-
-  private loadPaidStatements(): void {
-    if (!this.selectedMonth) {
-      this.paidStatements.clear();
-      return;
-    }
-
-    const storageKey = this.getStorageKey();
-    const stored = localStorage.getItem(storageKey);
-    
-    if (stored) {
-      try {
-        const ids = JSON.parse(stored) as number[];
-        this.paidStatements = new Set(ids);
-      } catch (error) {
-        console.error('Error al cargar estados de pago:', error);
-        this.paidStatements.clear();
-      }
-    } else {
-      this.paidStatements.clear();
-    }
-  }
-
-  private savePaidStatements(): void {
-    if (!this.selectedMonth) return;
-
-    const storageKey = this.getStorageKey();
-    const ids = Array.from(this.paidStatements);
-    localStorage.setItem(storageKey, JSON.stringify(ids));
-  }
-
-  isPaid(statementId: number): boolean {
-    return this.paidStatements.has(statementId);
+  isPaid(statement: AccountStatement): boolean {
+    return statement.pagado === true;
   }
 
   togglePayment(statement: AccountStatement, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-
-    const isCurrentlyPaid = this.isPaid(statement.id);
     
-    if (isCurrentlyPaid) {
-      this.paidStatements.delete(statement.id);
-    } else {
-      this.paidStatements.add(statement.id);
-    }
-
-    this.savePaidStatements();
+    // Ocultar errores previos
+    this.hideError();
     
-    this.paymentToggled.emit({
-      statementId: statement.id,
-      isPaid: !isCurrentlyPaid,
-      amount: statement.montoAPagar,
-      isNacional: statement.divisa === 'CLP' || statement.divisa === 'clp'
+    // Llamar al servicio para actualizar el estado
+    this.apiService.updatePaymentStatus(statement.id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Actualizar el estado local del statement
+          statement.pagado = response.paid;
+          
+          // Emitir el evento para notificar al componente padre
+          this.paymentToggled.emit({
+            statementId: statement.id,
+            isPaid: response.paid,
+            amount: statement.montoAPagar,
+            isNacional: statement.divisa === 'CLP' || statement.divisa === 'clp'
+          });
+        } else {
+          this.showErrorMessage('La actualización no fue exitosa. Por favor, intente nuevamente.');
+        }
+      },
+      error: (error) => {
+        console.error('Error al actualizar el estado de pago:', error);
+        let errorMsg = 'Error al actualizar el estado de pago.';
+        
+        if (error.status === 500) {
+          errorMsg = 'Error del servidor (500). Por favor, contacte al administrador o intente más tarde.';
+        } else if (error.status === 404) {
+          errorMsg = 'El recurso solicitado no fue encontrado.';
+        } else if (error.status === 400) {
+          errorMsg = 'Solicitud inválida. Por favor, verifique los datos.';
+        } else if (error.status === 0) {
+          errorMsg = 'Error de conexión. Verifique su conexión a internet.';
+        } else if (error.error?.message) {
+          errorMsg = error.error.message;
+        } else if (error.message) {
+          errorMsg = error.message;
+        }
+        
+        this.showErrorMessage(errorMsg);
+      }
     });
+  }
+
+  showErrorMessage(message: string): void {
+    this.errorMessage = message;
+    this.showError = true;
+    
+    // Ocultar automáticamente después de 5 segundos
+    setTimeout(() => {
+      this.hideError();
+    }, 5000);
+  }
+
+  hideError(): void {
+    this.showError = false;
+    this.errorMessage = null;
   }
 
   goToPreviousMonth(): void {
